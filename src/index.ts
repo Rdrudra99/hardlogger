@@ -15,6 +15,10 @@ import type { LoggerConfig } from './types.js';
  * log.error('Database connection failed');
  * log.warn('Missing environment variable');
  * log.info('Listening on port 3000');
+ * 
+ * // Multiple arguments support
+ * log.info('User Object:', userData);
+ * log.success('Status:', status, 'Code:', code);
  * ```
  * 
  * @example
@@ -29,22 +33,22 @@ const log = {
   /**
    * Log a success message
    */
-  success: (message: string) => logger.success(message),
+  success: (...args: any[]) => logger.success(...args),
 
   /**
    * Log an error message
    */
-  error: (message: string) => logger.error(message),
+  error: (...args: any[]) => logger.error(...args),
 
   /**
    * Log a warning message
    */
-  warn: (message: string) => logger.warn(message),
+  warn: (...args: any[]) => logger.warn(...args),
 
   /**
    * Log an info message
    */
-  info: (message: string) => logger.info(message),
+  info: (...args: any[]) => logger.info(...args),
 
   /**
    * Configure logger options

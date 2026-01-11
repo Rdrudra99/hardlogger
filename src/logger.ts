@@ -80,13 +80,13 @@ class Logger {
   /**
    * Log message in Node.js with ANSI colors
    */
-  private logNode(level: LogLevel, message: string): void {
+  private logNode(level: LogLevel, ...args: any[]): void {
     try {
       const cfg = LOG_CONFIG[level];
       const timestamp = this.config.showTimestamp ? `${this.getTimestamp()} ` : '';
-      const formattedMessage = `${cfg.color}${cfg.symbol} ${cfg.label.padEnd(10)}${ANSI_COLORS.reset} ${timestamp}${message}`;
+      const prefix = `${cfg.color}${cfg.symbol} ${cfg.label.padEnd(10)}${ANSI_COLORS.reset} ${timestamp}`;
       
-      console.log(formattedMessage);
+      console.log(prefix, ...args);
     } catch {
       // Fail silently
     }
@@ -95,13 +95,13 @@ class Logger {
   /**
    * Log message in browser with CSS styling
    */
-  private logBrowser(level: LogLevel, message: string): void {
+  private logBrowser(level: LogLevel, ...args: any[]): void {
     try {
       const cfg = LOG_CONFIG[level];
       const timestamp = this.config.showTimestamp ? `${this.getTimestamp()} ` : '';
       const label = `${cfg.symbol} ${cfg.label}`;
       
-      console.log(`%c${label}%c ${timestamp}${message}`, BROWSER_STYLES[level], '');
+      console.log(`%c${label}%c ${timestamp}`, BROWSER_STYLES[level], '', ...args);
     } catch {
       // Fail silently
     }
@@ -110,23 +110,20 @@ class Logger {
   /**
    * Core log method - routes to appropriate handler
    */
-  private log(level: LogLevel, message: string): void {
+  private log(level: LogLevel, ...args: any[]): void {
     // Don't log if disabled
     if (!this.config.enabled) {
       return;
     }
 
     try {
-      // Convert message to string safely
-      const msg = String(message ?? '');
-
       if (this.runtime === 'node') {
-        this.logNode(level, msg);
+        this.logNode(level, ...args);
       } else if (this.runtime === 'browser') {
-        this.logBrowser(level, msg);
+        this.logBrowser(level, ...args);
       } else {
         // Fallback to plain console.log
-        console.log(`[${level.toUpperCase()}]`, msg);
+        console.log(`[${level.toUpperCase()}]`, ...args);
       }
     } catch {
       // Fail silently - never break user's app
@@ -136,29 +133,29 @@ class Logger {
   /**
    * Log success message
    */
-  public success(message: string): void {
-    this.log('success', message);
+  public success(...args: any[]): void {
+    this.log('success', ...args);
   }
 
   /**
    * Log error message
    */
-  public error(message: string): void {
-    this.log('error', message);
+  public error(...args: any[]): void {
+    this.log('error', ...args);
   }
 
   /**
    * Log warning message
    */
-  public warn(message: string): void {
-    this.log('warn', message);
+  public warn(...args: any[]): void {
+    this.log('warn', ...args);
   }
 
   /**
    * Log info message
    */
-  public info(message: string): void {
-    this.log('info', message);
+  public info(...args: any[]): void {
+    this.log('info', ...args);
   }
 }
 
